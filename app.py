@@ -63,12 +63,12 @@ def insert_prediction(ls, lp, ap, as_val, predict):
             
             # Query de inserción
             insert_query = """
-            INSERT INTO predictions (ls, lp, ap, as, predict, created_at) 
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO predictions (ls, lp, ap, as, predict) 
+            VALUES (%s, %s, %s, %s, %s)
             """
             
             # Datos a insertar
-            record = (ls, lp, ap, as_val, predict, datetime.now())
+            record = (ls, lp, ap, as_val, predict)
             
             # Ejecutar la inserción
             cursor.execute(insert_query, record)
