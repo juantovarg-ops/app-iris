@@ -39,7 +39,50 @@ try:
 except Exception as e:
     st.write(str(e))
 
+# Función para conectar a la base de datos
+def get_db_connection():
+    try:
+        connection = psycopg2.connect(
+            user=USER,
+            password=PASSWORD,
+            host=HOST,
+            port=PORT,
+            dbname=DBNAME
+        )
+        return connection
+    except Exception as e:
+        st.error(f"Error de conexión: {str(e)}")
+        return None
 
+# Función para insertar predicción en la base de datos
+def insert_prediction(ls, lp, ap, as_val, predict):
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            
+            # Query de inserción
+            insert_query = """
+            INSERT INTO predictions (ls, lp, ap, as, predict, created_at) 
+            VALUES (%s, %s, %s, %s, %s, %s)
+            """
+            
+            # Datos a insertar
+            record = (ls, lp, ap, as_val, predict, datetime.now())
+            
+            # Ejecutar la inserción
+            cursor.execute(insert_query, record)
+            connection.commit()
+            
+            st.success("✅ Predicción guardada en la base de datos")
+            
+            cursor.close()
+            connection.close()
+            
+        except Exception as e:
+            st.error(f"Error al guardar en la base de datos: {str(e)}")
+            if connection:
+                connection.close()
 
 # Función para cargar los modelos
 @st.cache_resource
@@ -93,3 +136,11 @@ if model is not None:
         st.write("Probabilidades:")
         for species, prob in zip(target_names, probabilities):
             st.write(f"- {species}: {prob:.1%}")
+
+        insert_prediction(
+            ls=float(sepal_length),      # Longitud del sépalo
+            lp=float(petal_length),      # Longitud del pétalo  
+            ap=float(petal_width),       # Ancho del pétalo
+            as_val=float(sepal_width),   # Ancho del sépalo (as es palabra reservada en Python)
+            predict=predicted_species    # Predicción
+        )
