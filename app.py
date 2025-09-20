@@ -136,4 +136,11 @@ if model is not None:
         st.write("Probabilidades:")
         for species, prob in zip(target_names, probabilities):
             st.write(f"- {species}: {prob:.1%}")
-
+        
+        insert_prediction(
+            ls=float(sepal_length),      # Longitud del sépalo
+            lp=float(petal_length),      # Longitud del pétalo  
+            ap=float(petal_width),       # Ancho del pétalo
+            as_val=float(sepal_width),   # Ancho del sépalo (as es palabra reservada en Python)
+            predict=predicted_species    # Predicción
+        )
