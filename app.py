@@ -63,7 +63,7 @@ def insert_prediction(ls, lp, ap, as_val, predict):
             
             # Query de inserción
             insert_query = """
-            INSERT INTO predictions (ls, lp, ap, ansep, predict) 
+            INSERT INTO tb_iris (ls, lp, ap, ansep, prediction) 
             VALUES (%s, %s, %s, %s, %s)
             """
             
